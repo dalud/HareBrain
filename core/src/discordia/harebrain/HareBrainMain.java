@@ -34,6 +34,7 @@ public class HareBrainMain extends ApplicationAdapter {
 
 		pupu.move();
 
+
 		batch.begin();
 		pupu.draw(batch);
 		batch.end();

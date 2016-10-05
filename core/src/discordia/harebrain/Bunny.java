@@ -32,19 +32,31 @@ public class Bunny {
         batch.draw(currentFrame, cam.position.x-(currentFrame.getRegionWidth()/2), cam.position.y-(currentFrame.getRegionHeight()/2));
     }
     public void move(){
-        if(Gdx.input.isTouched()){
-            if(Gdx.input.getX() > 640){
-                state = State.RIGHT;
-                this.anim(1);
+        switch(state) {
+            case RIGHT: {
+                if (Gdx.input.isTouched()) {
+                    if (Gdx.input.getX() > 640) {
+                        this.anim(1);
+                }
+                    else if (Gdx.input.getX() < 640) {
+                        state = State.LEFT;
+                    }
+                }
+                else this.anim(0);
+                break;
             }
-            else if(Gdx.input.getX() < 640){
-                state = State.LEFT;
-                this.anim(2);
+            case LEFT: {
+                if (Gdx.input.isTouched()) {
+                    if (Gdx.input.getX() < 640) {
+                        this.anim(2);
+                    }
+                    else if (Gdx.input.getX() > 640) {
+                        state = State.RIGHT;
+                    }
+                }
+                else this.anim(3);
+                break;
             }
-        }
-        else {
-            if(state == State.RIGHT) this.anim(0);
-            else if(state == State.LEFT) this.anim(3);
         }
     }
 
