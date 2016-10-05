@@ -32,7 +32,8 @@ public class HareBrainMain extends ApplicationAdapter {
 		cam.position.set(0, 0, 0);
 		cam.update();
 
-		pupu.move();
+
+		pupu.anim();
 
 
 		batch.begin();

@@ -1,6 +1,7 @@
 package discordia.harebrain;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -12,55 +13,37 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 
 public class Bunny {
+    private Texture animSheet, sitRight, hopRight, hopLeft, sitLeft;
     public TextureRegion currentFrame;
     OrthographicCamera cam;
+    InputProcessor input;
     float frameT, stateTime;
-    private enum State {    RIGHT,
-        LEFT,
-        JUMP,
-        DUCK    }
-    private State state;
+    enum State {    SIT_RIGHT,
+                            SIT_LEFT,
+                            HOP_RIGHT,
+                            HOP_LEFT,
+                            JUMP,
+                            DUCK    }
+    State state;
 
     public Bunny(OrthographicCamera cam){
         this.cam = cam;
+        input = new MyInput(this);
+        Gdx.input.setInputProcessor(input);
         frameT = .2f;
         stateTime = 0;
-        state = State.RIGHT;
+        state = State.SIT_RIGHT;
 
+        sitRight = new Texture("Bunny/pupu_sit.png");
+        hopRight = new Texture("Bunny/pupu_hopRight.png");
+        hopLeft = new Texture("Bunny/pupu_hopLeft.png");
+        sitLeft = new Texture("Bunny/pupu_sitLeft.png");
     }
     public void draw(SpriteBatch batch){
         batch.draw(currentFrame, cam.position.x-(currentFrame.getRegionWidth()/2), cam.position.y-(currentFrame.getRegionHeight()/2));
     }
-    public void move(){
-        switch(state) {
-            case RIGHT: {
-                if (Gdx.input.isTouched()) {
-                    if (Gdx.input.getX() > 640) {
-                        this.anim(1);
-                }
-                    else if (Gdx.input.getX() < 640) {
-                        state = State.LEFT;
-                    }
-                }
-                else this.anim(0);
-                break;
-            }
-            case LEFT: {
-                if (Gdx.input.isTouched()) {
-                    if (Gdx.input.getX() < 640) {
-                        this.anim(2);
-                    }
-                    else if (Gdx.input.getX() > 640) {
-                        state = State.RIGHT;
-                    }
-                }
-                else this.anim(3);
-                break;
-            }
-        }
-    }
 
-    public void anim(int state) {
+    public void anim() {
 
         int frame_cols = 3;
         int frame_rows = 1;
@@ -68,13 +51,13 @@ public class Bunny {
 
 
         Animation anim;
-        Texture animSheet = new Texture("Bunny/pupu_sit.png");
+
         TextureRegion[] animFrames;
 
-        if(state==0) animSheet = new Texture("Bunny/pupu_sit.png");
-        if(state==1) animSheet = new Texture("Bunny/pupu_hopRight.png");
-        if(state==2) animSheet = new Texture("Bunny/pupu_hopLeft.png");
-        if(state==3) animSheet = new Texture("Bunny/pupu_sitLeft.png");
+        if(state == State.SIT_RIGHT) animSheet = sitRight;
+        else if(state == State.HOP_RIGHT) animSheet = hopRight;
+        else if(state == State.HOP_LEFT) animSheet = hopLeft;
+        else if(state == State.SIT_LEFT) animSheet = sitLeft;
 
         TextureRegion[][] tmp = TextureRegion.split(animSheet, animSheet.getWidth()/frame_cols, animSheet.getHeight()/frame_rows);
         animFrames = new TextureRegion[frame_cols * frame_rows];
