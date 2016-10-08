@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * Created by Dalud on 3.10.2016.
+ * Created by dalud on 3.10.2016.
  */
 
 public class Bunny {
@@ -30,7 +30,7 @@ public class Bunny {
         this.cam = cam;
         input = new MyInput(this);
         Gdx.input.setInputProcessor(input);
-        frameT = .2f;
+        frameT = .15f;
         stateTime = 0;
         state = State.SIT_RIGHT;
 
@@ -40,7 +40,7 @@ public class Bunny {
         sitLeft = new Texture("Bunny/pupu_sitLeft.png");
     }
     public void draw(SpriteBatch batch){
-        batch.draw(currentFrame, cam.position.x-(currentFrame.getRegionWidth()/2), cam.position.y-(currentFrame.getRegionHeight()/2));
+        batch.draw(currentFrame, cam.position.x-(currentFrame.getRegionWidth()/2), cam.position.y-(currentFrame.getRegionHeight()));
     }
 
     public void anim() {
@@ -48,7 +48,6 @@ public class Bunny {
         int frame_cols = 3;
         int frame_rows = 1;
         float tick = Gdx.graphics.getDeltaTime();
-
 
         Animation anim;
 

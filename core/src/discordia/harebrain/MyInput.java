@@ -1,6 +1,8 @@
 package discordia.harebrain;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 
 /**
  * Created by dalud on 5.10.2016.
@@ -10,13 +12,17 @@ public class MyInput implements InputProcessor {
     private Bunny bunny;
 
     public MyInput(Bunny bunny){
-        this.bunny = bunny;
+                this.bunny = bunny;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if(screenX > 640) bunny.state = Bunny.State.HOP_RIGHT;
-        else bunny.state = Bunny.State.HOP_LEFT;
+        if(screenX > 640) {
+            bunny.state = Bunny.State.HOP_RIGHT;
+        }
+        else {
+            bunny.state = Bunny.State.HOP_LEFT;
+        }
         return false;
     }
 
