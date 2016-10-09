@@ -15,7 +15,7 @@ public class Movement {
     public Movement(Bunny bunny, OrthographicCamera cam){
         this.bunny = bunny;
         this.cam = cam;
-        speed = 3;
+        speed = 4;
     }
 
     public void move(){

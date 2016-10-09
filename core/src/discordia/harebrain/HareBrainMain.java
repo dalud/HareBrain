@@ -13,7 +13,7 @@ public class HareBrainMain extends ApplicationAdapter {
 	static int resoX = 1280;
 	static int resoY = 720;
 
-	private Bunny pupu;
+	private Bunny bunny;
 	private Fourest level;
 	private Movement move;
 
@@ -22,9 +22,9 @@ public class HareBrainMain extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera(resoX, resoY);
-		pupu = new Bunny(cam);
-		level = new Fourest();
-		move = new Movement(pupu, cam);
+		bunny = new Bunny(cam);
+		level = new Fourest(bunny);
+		move = new Movement(bunny, cam);
 
 		cam.position.set(0, 0, 0);
 		cam.update();
@@ -37,12 +37,12 @@ public class HareBrainMain extends ApplicationAdapter {
 		batch.setProjectionMatrix(cam.combined);
 		cam.update();
 
-		pupu.anim();
+		bunny.anim();
 		move.move();
 
 		batch.begin();
 		level.draw(batch);
-		pupu.draw(batch);
+		bunny.draw(batch);
 		batch.end();
 	}
 
