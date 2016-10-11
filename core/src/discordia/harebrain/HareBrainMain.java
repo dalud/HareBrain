@@ -32,7 +32,7 @@ public class HareBrainMain extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(91/255f, 110/255f, 225/255f, 0);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(cam.combined);
 		cam.update();
