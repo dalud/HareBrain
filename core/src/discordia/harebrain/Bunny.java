@@ -2,22 +2,29 @@ package discordia.harebrain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 
 /**
  * Created by dalud on 3.10.2016.
  */
 
-public class Bunny {
+public class Bunny extends Rectangle{
     private Texture animSheet, sitRight, hopRight, hopLeft, sitLeft;
     public TextureRegion currentFrame;
     OrthographicCamera cam;
     InputProcessor input;
     float frameT, stateTime;
+
+
+    public int posX, posY, width, height;
     enum State {    SIT_RIGHT,
                             SIT_LEFT,
                             HOP_RIGHT,
@@ -27,6 +34,7 @@ public class Bunny {
     State state;
 
     public Bunny(OrthographicCamera cam){
+
         this.cam = cam;
         input = new MyInput(this);
         Gdx.input.setInputProcessor(input);
@@ -38,9 +46,15 @@ public class Bunny {
         hopRight = new Texture("Bunny/pupu_hopRight.png");
         hopLeft = new Texture("Bunny/pupu_hopLeft.png");
         sitLeft = new Texture("Bunny/pupu_sitLeft.png");
+        width = (sitRight.getWidth()/3);
+        height = sitRight.getHeight();
+        posX = (int) (cam.position.x-width/2);
+        posY = (int) cam.position.y-height;
+
+
     }
     public void draw(SpriteBatch batch){
-        batch.draw(currentFrame, cam.position.x-(currentFrame.getRegionWidth()/2), cam.position.y-(currentFrame.getRegionHeight()));
+        batch.draw(currentFrame, posX, posY);
     }
 
     public void anim() {

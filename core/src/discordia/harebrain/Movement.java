@@ -19,7 +19,14 @@ public class Movement {
     }
 
     public void move(){
-        if(bunny.state == Bunny.State.HOP_RIGHT) cam.translate(speed, 0, 0);
-        else if(bunny.state == Bunny.State.HOP_LEFT) cam.translate(-speed, 0, 0);
+        if(bunny.state == Bunny.State.HOP_RIGHT) {
+            bunny.posX += speed;
+            cam.translate(speed, 0, 0);
+        }
+        else if(bunny.state == Bunny.State.HOP_LEFT) {
+            bunny.posX -= speed;
+            cam.translate(-speed, 0, 0);
+        }
+
     }
 }
