@@ -2,6 +2,7 @@ package discordia.harebrain;
 
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by dalud on 8.10.2016.
@@ -10,23 +11,32 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 public class Movement {
     private Bunny bunny;
     private OrthographicCamera cam;
-    private int speed;
+    static float SPEED = .03f;
+    static float SCALE = SPEED*20;
+    private Vector2 velo, pos;
+    static float MAX_VELOCITY = 1.3f;
+
 
     public Movement(Bunny bunny, OrthographicCamera cam){
         this.bunny = bunny;
         this.cam = cam;
-        speed = 4;
+
     }
 
     public void move(){
+        velo = bunny.body.getLinearVelocity();
+        pos = bunny.body.getPosition();
+
         if(bunny.state == Bunny.State.HOP_RIGHT) {
-            bunny.posX += speed;
-            cam.translate(speed, 0, 0);
+            bunny.frame.translate(SPEED, 0);
+            if(velo.x < MAX_VELOCITY) bunny.body.applyLinearImpulse(SCALE, 0, pos.x, pos.y, true);
+            cam.translate(SPEED, 0, 0);
         }
         else if(bunny.state == Bunny.State.HOP_LEFT) {
-            bunny.posX -= speed;
-            cam.translate(-speed, 0, 0);
+            bunny.frame.translate(-SPEED, 0);
+            if(velo.x > -MAX_VELOCITY) bunny.body.applyLinearImpulse(-SCALE, 0, pos.x, pos.y, true);
+            cam.translate(-SPEED, 0, 0);
         }
-
+        System.out.println(velo);
     }
 }

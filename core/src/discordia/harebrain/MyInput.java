@@ -1,6 +1,7 @@
 package discordia.harebrain;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -53,14 +54,17 @@ public class MyInput implements InputProcessor {
     }
     @Override
     public boolean keyDown(int keycode) {
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) bunny.state = Bunny.State.HOP_RIGHT;
+        else if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) bunny.state = Bunny.State.HOP_LEFT;
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        if(bunny.state == Bunny.State.HOP_RIGHT) bunny.state = Bunny.State.SIT_RIGHT;
+        else if(bunny.state == Bunny.State.HOP_LEFT) bunny.state = Bunny.State.SIT_LEFT;
         return false;
     }
-
     @Override
     public boolean keyTyped(char character) {
         return false;

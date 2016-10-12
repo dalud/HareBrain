@@ -11,20 +11,28 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
+
+import javafx.geometry.Rectangle2D;
 
 /**
  * Created by dalud on 3.10.2016.
  */
 
-public class Bunny extends Rectangle{
+public class Bunny{
     private Texture animSheet, sitRight, hopRight, hopLeft, sitLeft;
-    public TextureRegion currentFrame;
+    private TextureRegion currentFrame;
+    public Sprite frame;
     OrthographicCamera cam;
     InputProcessor input;
     float frameT, stateTime;
+    public Body body;
 
-
-    public int posX, posY, width, height;
     enum State {    SIT_RIGHT,
                             SIT_LEFT,
                             HOP_RIGHT,
@@ -33,7 +41,7 @@ public class Bunny extends Rectangle{
                             DUCK    }
     State state;
 
-    public Bunny(OrthographicCamera cam){
+    public Bunny(OrthographicCamera cam, World world){
 
         this.cam = cam;
         input = new MyInput(this);
@@ -46,15 +54,34 @@ public class Bunny extends Rectangle{
         hopRight = new Texture("Bunny/pupu_hopRight.png");
         hopLeft = new Texture("Bunny/pupu_hopLeft.png");
         sitLeft = new Texture("Bunny/pupu_sitLeft.png");
-        width = (sitRight.getWidth()/3);
-        height = sitRight.getHeight();
-        posX = (int) (cam.position.x-width/2);
-        posY = (int) cam.position.y-height;
 
+        currentFrame = new TextureRegion(sitRight, sitRight.getWidth()/3, sitRight.getHeight());
+        frame = new Sprite(currentFrame);
+        frame.setSize(2, 2);
+
+        //physics testing
+        BodyDef def = new BodyDef();
+        def.type = BodyDef.BodyType.DynamicBody;
+        def.position.set(0, 5);
+        body = world.createBody(def);
+        PolygonShape gon = new PolygonShape();
+        gon.setAsBox(1, 1);
+
+
+        FixtureDef fixDef = new FixtureDef();
+        fixDef.shape = gon;
+        fixDef.density = 1;
+        fixDef.friction = .5f;
+        fixDef.restitution = 0;
+        Fixture fix = body.createFixture(fixDef);
+        gon.dispose();
 
     }
     public void draw(SpriteBatch batch){
-        batch.draw(currentFrame, posX, posY);
+        frame.setPosition(body.getPosition().x-1, body.getPosition().y-1);
+        frame.setRegion(currentFrame);
+        frame.draw(batch);
+
     }
 
     public void anim() {

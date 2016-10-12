@@ -10,15 +10,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class HareBrainMain extends ApplicationAdapter {
+	World world;
+	Box2DDebugRenderer debug;
+
 	SpriteBatch batch;
 	OrthographicCamera cam;
 
 
-	static int resoX = 1280;
-	static int resoY = 720;
+	static int resoX = 16;
+	static int resoY = 9;
 
 	private Bunny bunny;
 	private Fourest level;
@@ -26,12 +30,13 @@ public class HareBrainMain extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-
+		world = new World(new Vector2(0, -10), true);
+		debug = new Box2DDebugRenderer();
 
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera(resoX, resoY);
-		bunny = new Bunny(cam);
-		level = new Fourest(bunny);
+		bunny = new Bunny(cam, world);
+		level = new Fourest(bunny, world);
 		move = new Movement(bunny, cam);
 
 		cam.position.set(0, 0, 0);
@@ -56,7 +61,8 @@ public class HareBrainMain extends ApplicationAdapter {
 		bunny.draw(batch);
 		batch.end();
 
-
+		//debug.render(world, cam.combined);
+		world.step(1/45f, 6, 2);
 	}
 
 	@Override
