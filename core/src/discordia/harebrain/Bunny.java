@@ -26,26 +26,27 @@ import javafx.geometry.Rectangle2D;
 
 public class Bunny{
     private Texture animSheet, sitRight, hopRight, hopLeft, sitLeft;
-    private TextureRegion currentFrame;
+    private TextureRegion currentFrame,jumpRight, jumpLeft, fallRight, fallLeft;
     public Sprite frame;
     OrthographicCamera cam;
-    InputProcessor input;
     float frameT, stateTime;
     public Body body;
 
     enum State {    SIT_RIGHT,
-                            SIT_LEFT,
-                            HOP_RIGHT,
-                            HOP_LEFT,
-                            JUMP,
-                            DUCK    }
+                    SIT_LEFT,
+                    HOP_RIGHT,
+                    HOP_LEFT,
+                    JUMP_RIGHT,
+                    JUMP_LEFT,
+                    FALL_RIGHT,
+                    FALL_LEFT,
+                    DUCK    }
     State state;
 
     public Bunny(OrthographicCamera cam, World world){
 
         this.cam = cam;
-        input = new MyInput(this);
-        Gdx.input.setInputProcessor(input);
+
         frameT = .15f;
         stateTime = 0;
         state = State.SIT_RIGHT;
@@ -54,6 +55,12 @@ public class Bunny{
         hopRight = new Texture("Bunny/pupu_hopRight.png");
         hopLeft = new Texture("Bunny/pupu_hopLeft.png");
         sitLeft = new Texture("Bunny/pupu_sitLeft.png");
+        jumpRight = new TextureRegion(new Texture("Bunny/pupu_jump.png"));
+        jumpLeft = new TextureRegion(jumpRight);
+        jumpLeft.flip(true, false);
+        fallRight = new TextureRegion(new Texture("Bunny/pupu_fall.png"));
+        fallLeft = new TextureRegion(fallRight);
+        fallLeft.flip(true, false);
 
         currentFrame = new TextureRegion(sitRight, sitRight.getWidth()/3, sitRight.getHeight());
         frame = new Sprite(currentFrame);
@@ -109,6 +116,10 @@ public class Bunny{
         }
         anim = new Animation(frameT, animFrames);
         stateTime += tick;
-        currentFrame = anim.getKeyFrame(stateTime, true);
+        if(state == State.JUMP_RIGHT) currentFrame = jumpRight;
+        else if(state == State.JUMP_LEFT) currentFrame = jumpLeft;
+        else if(state == State.FALL_RIGHT) currentFrame = fallRight;
+        else if(state == State.FALL_LEFT) currentFrame = fallLeft;
+        else currentFrame = anim.getKeyFrame(stateTime, true);
     }
 }

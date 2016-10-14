@@ -26,6 +26,7 @@ public class HareBrainMain extends ApplicationAdapter {
 
 	private Bunny bunny;
 	private Fourest level;
+	private MyInput input;
 	private Movement move;
 
 	@Override
@@ -38,6 +39,9 @@ public class HareBrainMain extends ApplicationAdapter {
 		bunny = new Bunny(cam, world);
 		level = new Fourest(bunny, world);
 		move = new Movement(bunny, cam);
+		input = new MyInput(move);
+		Gdx.input.setInputProcessor(input);
+
 
 		cam.position.set(0, 0, 0);
 		cam.update();
@@ -47,21 +51,20 @@ public class HareBrainMain extends ApplicationAdapter {
 	@Override
 	public void render () {
 
-
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(cam.combined);
 		cam.update();
 
-		bunny.anim();
 		move.move();
+		bunny.anim();
 
 		batch.begin();
 		level.draw(batch);
 		bunny.draw(batch);
 		batch.end();
 
-		//debug.render(world, cam.combined);
+		debug.render(world, cam.combined);
 		world.step(1/45f, 6, 2);
 	}
 

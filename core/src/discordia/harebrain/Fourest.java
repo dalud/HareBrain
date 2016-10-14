@@ -17,7 +17,7 @@ public class Fourest {
     private Texture layer0, layer1, layer2, layer3;
     private Sprite l0, l1, l2, l3;
     private int l0X, l0Y, l2X, l2Y;
-    private float speed = Movement.SPEED;
+    //private float speed = Movement.SPEED;
 
     private Bunny bunny;
     public Body body;
@@ -56,14 +56,14 @@ public class Fourest {
         //batch.draw(layer3, -layer3.getWidth()/2, -Gdx.graphics.getHeight()/2);
         l2.draw(batch);
 
-        if(bunny.state == Bunny.State.HOP_RIGHT) {
+        /*if(bunny.state == Bunny.State.HOP_RIGHT) {
             l0.translate(-speed*1.33f, 0);
             l2.translate(+speed*.66f, 0);
         }
         else if(bunny.state == Bunny.State.HOP_LEFT) {
             l0.translate(+speed*1.33f, 0);
             l2.translate(-speed*.66f, 0);
-        }
+        }*/
 
         l1.draw(batch);
         l0.draw(batch);
