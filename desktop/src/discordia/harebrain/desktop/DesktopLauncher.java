@@ -2,7 +2,8 @@ package discordia.harebrain.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import discordia.harebrain.HareBrainMain;
+
+import discordia.harebrain.*;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -11,5 +12,6 @@ public class DesktopLauncher {
 		config.height = 720;
 
 		new LwjglApplication(new HareBrainMain(), config);
+
 	}
 }

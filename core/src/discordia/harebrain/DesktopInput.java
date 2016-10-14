@@ -3,38 +3,30 @@ package discordia.harebrain;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector2;
-
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 
 /**
  * Created by dalud on 5.10.2016.
  */
 
-public class MyInput implements InputProcessor {
+public class DesktopInput implements InputProcessor {
     private Movement move;
-    private int half, touch;
+    private int half;
 
-    public MyInput(Movement move){
+    public DesktopInput(Movement move){
         half = Gdx.graphics.getWidth()/2;
-        touch = 0;
         this.move = move;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touch++;
-        if(screenX > half) move.direc = Movement.Direc.RIGHT;
-        else move.direc = Movement.Direc.LEFT;
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        touch--;
-        if(touch == 0) move.direc = Movement.Direc.IDLE;
+        AndroidInput.touch--;
+        System.out.println(AndroidInput.touch);
+        if(AndroidInput.touch == 0) move.direc = Movement.Direc.IDLE;
         else if(screenX > half) move.direc = Movement.Direc.LEFT;
         else if(screenX < half) move.direc = Movement.Direc.RIGHT;
         return false;
@@ -42,6 +34,8 @@ public class MyInput implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if(screenY+Gdx.graphics.getHeight()/20 < AndroidInput.initY) move.jump();
+        AndroidInput.initY = screenY;
         return false;
     }
 
@@ -54,6 +48,7 @@ public class MyInput implements InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
     @Override
     public boolean keyDown(int keycode) {
 

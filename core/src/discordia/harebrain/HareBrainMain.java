@@ -2,18 +2,18 @@ package discordia.harebrain;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class HareBrainMain extends ApplicationAdapter {
+	public static Movement move;
 	World world;
 	Box2DDebugRenderer debug;
 
@@ -26,8 +26,9 @@ public class HareBrainMain extends ApplicationAdapter {
 
 	private Bunny bunny;
 	private Fourest level;
-	private MyInput input;
-	private Movement move;
+	private InputMultiplexer inputs;
+	private InputProcessor andrIn, deskIn;
+
 
 	@Override
 	public void create () {
@@ -39,9 +40,10 @@ public class HareBrainMain extends ApplicationAdapter {
 		bunny = new Bunny(cam, world);
 		level = new Fourest(bunny, world);
 		move = new Movement(bunny, cam);
-		input = new MyInput(move);
-		Gdx.input.setInputProcessor(input);
-
+		andrIn = new GestureDetector(new AndroidInput(move));
+		deskIn = new DesktopInput(move);
+		inputs = new InputMultiplexer(deskIn, andrIn);
+		Gdx.input.setInputProcessor(inputs);
 
 		cam.position.set(0, 0, 0);
 		cam.update();
@@ -64,7 +66,7 @@ public class HareBrainMain extends ApplicationAdapter {
 		bunny.draw(batch);
 		batch.end();
 
-		debug.render(world, cam.combined);
+		//debug.render(world, cam.combined);
 		world.step(1/45f, 6, 2);
 	}
 
