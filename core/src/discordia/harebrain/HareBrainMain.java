@@ -38,7 +38,7 @@ public class HareBrainMain extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera(resoX, resoY);
 		bunny = new Bunny(cam, world);
-		level = new Fourest(bunny, world);
+		level = new Fourest(cam, world);
 		move = new Movement(bunny, cam);
 		andrIn = new GestureDetector(new AndroidInput(move));
 		deskIn = new DesktopInput(move);

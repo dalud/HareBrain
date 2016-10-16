@@ -13,7 +13,8 @@ public class Movement {
     private Bunny bunny;
     private OrthographicCamera cam;
     private volatile Vector2 velo, pos;
-    private float speed, maxSpeed, jump, jumpMagic, jumpX, jumpVeloX, camSpeed;
+    private float speed, jump, jumpMagic, jumpX, jumpVeloX;
+    public static float maxSpeed;
     private volatile Bunny.State idle;
     private volatile boolean airborne;
 
@@ -31,7 +32,6 @@ public class Movement {
         maxSpeed = 2;
         jump = 20;
         jumpMagic = .1111098416149f;
-        camSpeed = .05f;
         idle = Bunny.State.SIT_RIGHT;
         direc = Direc.IDLE;
         cam.position.set(0, 0, 0);

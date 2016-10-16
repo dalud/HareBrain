@@ -78,7 +78,7 @@ public class Bunny{
         FixtureDef fixDef = new FixtureDef();
         fixDef.shape = gon;
         fixDef.density = 1;
-        fixDef.friction = .5f;
+        fixDef.friction = .7f;
         fixDef.restitution = 0;
         Fixture fix = body.createFixture(fixDef);
         gon.dispose();
