@@ -10,10 +10,11 @@ import com.badlogic.gdx.InputProcessor;
 
 public class DesktopInput implements InputProcessor {
     private Movement move;
-    private int half;
+    private int half, dragSens;
 
     public DesktopInput(Movement move){
         half = Gdx.graphics.getWidth()/2;
+        dragSens = Gdx.graphics.getHeight()/20;
         this.move = move;
     }
 
@@ -42,9 +43,16 @@ public class DesktopInput implements InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         if(!AndroidInput.ducked) {
-            if (screenY + Gdx.graphics.getHeight()/20 < AndroidInput.initY) {
+            if (screenY + dragSens < AndroidInput.initY) {
                 move.jump();
-                System.out.println("drag jump");
+            }
+            else if(screenY - dragSens > AndroidInput.initY) {
+                if(AndroidInput.initY != 0) { //hirveä purkka, mutta haluan päästä pelaamaan EVEä :D
+                    AndroidInput.ducked = true;
+                    AndroidInput.ducker = pointer;
+                    System.out.println("drag duck, koska initY:" + AndroidInput.initY + " ja screenY:" + screenY);
+                    move.direc = Movement.Direc.DUCK;
+                }
             }
             AndroidInput.initY = screenY;
         }

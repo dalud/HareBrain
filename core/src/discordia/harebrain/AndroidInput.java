@@ -5,7 +5,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Created by Dalud on 15.10.2016.
+ * Created by dalud on 15.10.2016.
  */
 
 public class AndroidInput implements GestureDetector.GestureListener{
@@ -32,6 +32,7 @@ public class AndroidInput implements GestureDetector.GestureListener{
             ducker = pointer;
             initY = 0;
             move.direc = Movement.Direc.DUCK;
+            System.out.println("touch duck");
         }
 
         if(!ducked) {
