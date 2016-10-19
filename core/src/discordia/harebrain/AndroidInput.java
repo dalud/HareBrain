@@ -9,10 +9,11 @@ import com.badlogic.gdx.math.Vector2;
  */
 
 public class AndroidInput implements GestureDetector.GestureListener{
-    public volatile static Integer touch;
+    public volatile static int touch, ducker;
     private int half;
     public volatile static float initY;
     private Movement move;
+    public static volatile boolean ducked;
 
 
     public AndroidInput(Movement move) {
@@ -23,12 +24,24 @@ public class AndroidInput implements GestureDetector.GestureListener{
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         touch++;
-        System.out.println(touch);
+        //System.out.println(touch);
         initY = y;
-        if(x > half && move.direc != Movement.Direc.LEFT) move.direc = Movement.Direc.RIGHT;
-        else if(x < half && move.direc != Movement.Direc.RIGHT) move.direc = Movement.Direc.LEFT;
-        else if(touch > 1) {
-            if( move.direc == Movement.Direc.RIGHT || move.direc == Movement.Direc.LEFT)move.jump();
+
+        if(y > Gdx.graphics.getHeight()/6*5 && x > Gdx.graphics.getWidth()/3 && x < Gdx.graphics.getWidth()/3*2) {
+            ducked = true;
+            ducker = pointer;
+            initY = 0;
+            move.direc = Movement.Direc.DUCK;
+        }
+
+        if(!ducked) {
+            if (x > half && move.direc != Movement.Direc.LEFT) move.direc = Movement.Direc.RIGHT;
+            else if (x < half && move.direc != Movement.Direc.RIGHT)
+                move.direc = Movement.Direc.LEFT;
+            else if (touch > 1) {
+                if (move.direc == Movement.Direc.RIGHT || move.direc == Movement.Direc.LEFT)
+                    move.jump();
+            }
         }
 
         return false;
@@ -37,7 +50,9 @@ public class AndroidInput implements GestureDetector.GestureListener{
     @Override
     public boolean tap(float x, float y, int count, int button) {
         initY = y;
-        if(y < Gdx.graphics.getHeight()/3) move.jump();
+        if(!ducked) {
+            if (y < Gdx.graphics.getHeight() / 3) move.jump();
+        }
         return false;
     }
 
