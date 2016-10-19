@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector2;
 
 public class AndroidInput implements GestureDetector.GestureListener{
     public volatile static int touch, ducker;
-    private int half;
     public volatile static float initY;
     private Movement move;
     public static volatile boolean ducked;
@@ -18,7 +17,6 @@ public class AndroidInput implements GestureDetector.GestureListener{
 
     public AndroidInput(Movement move) {
         this.move = move;
-        half = Gdx.graphics.getWidth()/2;
         touch = 0;
     }
     @Override
@@ -36,8 +34,8 @@ public class AndroidInput implements GestureDetector.GestureListener{
         }
 
         if(!ducked) {
-            if (x > half && move.direc != Movement.Direc.LEFT) move.direc = Movement.Direc.RIGHT;
-            else if (x < half && move.direc != Movement.Direc.RIGHT)
+            if (x > Gdx.graphics.getWidth()/16*10 && move.direc != Movement.Direc.LEFT) move.direc = Movement.Direc.RIGHT;
+            else if (x < Gdx.graphics.getWidth()/16*6 && move.direc != Movement.Direc.RIGHT)
                 move.direc = Movement.Direc.LEFT;
             else if (touch > 1) {
                 if (move.direc == Movement.Direc.RIGHT || move.direc == Movement.Direc.LEFT)
@@ -52,7 +50,7 @@ public class AndroidInput implements GestureDetector.GestureListener{
     public boolean tap(float x, float y, int count, int button) {
         initY = y;
         if(!ducked) {
-            if (y < Gdx.graphics.getHeight() / 3) move.jump();
+            if (y<Gdx.graphics.getHeight()/9*6 && x<Gdx.graphics.getWidth()/16*9 && x>Gdx.graphics.getWidth()/16*7) move.jump();
         }
         return false;
     }
