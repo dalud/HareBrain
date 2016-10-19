@@ -17,12 +17,12 @@ public class Movement {
     public static float maxSpeed;
     private volatile Bunny.State idle;
     private volatile boolean airborne;
-
     public enum Direc {
-        RIGHT,
-        LEFT, IDLE,
-    }
-
+                        RIGHT,
+                        LEFT,
+                        IDLE,
+                        DUCK
+                                }
     public Direc direc;
 
     public Movement(Bunny bunny, OrthographicCamera cam) {
@@ -79,6 +79,10 @@ public class Movement {
                 if (velo.x > -maxSpeed)
                     bunny.body.applyLinearImpulse(-speed, 0, pos.x, pos.y, true);
             }
+            if (direc == Direc.DUCK) {
+                if(idle == Bunny.State.SIT_RIGHT) bunny.state = Bunny.State.DUCK_RIGHT;
+                else bunny.state = Bunny.State.DUCK_LEFT;
+            }
         }
         cam.position.set(pos.x, 0, 0);
         /*System.out.println(velo);
@@ -105,7 +109,6 @@ public class Movement {
             }
         }
 
-        //System.out.println("JUMPING");
         if (!airborne) {
             airborne = true;
             bunny.body.applyLinearImpulse(jumpVeloX, jump, jumpX, pos.y, true);

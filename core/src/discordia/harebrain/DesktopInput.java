@@ -11,6 +11,7 @@ import com.badlogic.gdx.InputProcessor;
 public class DesktopInput implements InputProcessor {
     private Movement move;
     private int half;
+    private boolean ducked;
 
     public DesktopInput(Movement move){
         half = Gdx.graphics.getWidth()/2;
@@ -52,14 +53,20 @@ public class DesktopInput implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
 
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            move.direc = Movement.Direc.RIGHT;
+        if(keycode == Input.Keys.DOWN) {
+            ducked = true;
+            move.direc = Movement.Direc.DUCK;
         }
-        if(keycode == Input.Keys.LEFT) {
-            move.direc = Movement.Direc.LEFT;
-        }
-        if(keycode == Input.Keys.SPACE) {
-            move.jump();
+        if(!ducked) {
+            if (keycode == Input.Keys.SPACE) {
+                move.jump();
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                move.direc = Movement.Direc.RIGHT;
+            }
+            if (keycode == Input.Keys.LEFT) {
+                move.direc = Movement.Direc.LEFT;
+            }
         }
 
         return false;
@@ -67,7 +74,10 @@ public class DesktopInput implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        if(keycode != Input.Keys.SPACE) move.direc = Movement.Direc.IDLE;
+        if(keycode == Input.Keys.DOWN) ducked = false;
+        if(!ducked) {
+            if (keycode != Input.Keys.SPACE) move.direc = Movement.Direc.IDLE;
+        }
 
         return false;
     }
