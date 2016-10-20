@@ -25,6 +25,7 @@ public class AndroidInput implements GestureDetector.GestureListener{
         /*if(!DesktopInput.ducked) {
             if (y<Gdx.graphics.getHeight()/9*6 && x<Gdx.graphics.getWidth()/16*9 && x>Gdx.graphics.getWidth()/16*7) move.jump();
         }*/
+
         return false;
     }
 

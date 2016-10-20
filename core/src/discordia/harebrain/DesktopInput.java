@@ -10,13 +10,15 @@ import com.badlogic.gdx.InputProcessor;
 
 public class DesktopInput implements InputProcessor {
     private Movement move;
-    private int half, dragSens;
+    private int touchR, touchL, dragSens;
     public volatile static int touch, ducker;
     public volatile static float initY;
     public static volatile boolean ducked;
+    private Movement.Direc intent;
 
     public DesktopInput(Movement move){
-        half = Gdx.graphics.getWidth()/2;
+        touchR = Gdx.graphics.getWidth()/16*10;
+        touchL = Gdx.graphics.getWidth()/16*6;
         dragSens = Gdx.graphics.getHeight()/20;
         this.move = move;
     }
@@ -24,7 +26,7 @@ public class DesktopInput implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         touch++;
-        //System.out.println(touch);
+        System.out.println(touch);
 
         if(screenY > Gdx.graphics.getHeight()/6*5 && screenX > Gdx.graphics.getWidth()/3 && screenY < Gdx.graphics.getWidth()/3*2) {
             ducked = true;
@@ -35,13 +37,17 @@ public class DesktopInput implements InputProcessor {
         }
 
         if(!ducked) {
-            if (screenX > Gdx.graphics.getWidth()/16*10 && move.direc != Movement.Direc.LEFT) move.direc = Movement.Direc.RIGHT;
-            else if (screenY < Gdx.graphics.getWidth()/16*6 && move.direc != Movement.Direc.RIGHT)
-                move.direc = Movement.Direc.LEFT;
-            else if (touch > 1) {
-                if (move.direc == Movement.Direc.RIGHT || move.direc == Movement.Direc.LEFT)
+            if (screenX > touchR && move.direc != Movement.Direc.LEFT) intent = Movement.Direc.RIGHT;
+
+            if (screenX < touchL && move.direc != Movement.Direc.RIGHT) intent = Movement.Direc.LEFT;
+
+            if (touch > 1) {
+                if (move.direc == Movement.Direc.RIGHT || move.direc == Movement.Direc.LEFT) {
                     move.jump();
+                    //System.out.println("touch jump");
+                }
             }
+            move.direc = intent;
         }
 
         return false;
@@ -50,16 +56,19 @@ public class DesktopInput implements InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         touch--;
+        System.out.println(touch);
 
-        if(ducker == pointer) {
+        if(ducked && ducker == pointer) {
             ducked = false;
-            move.direc = Movement.Direc.IDLE;
+            move.direc = intent;
         }
 
         if(!ducked) {
             if (touch == 0) move.direc = Movement.Direc.IDLE;
-            else if (screenX > half) move.direc = Movement.Direc.LEFT;
-            else if (screenX < half) move.direc = Movement.Direc.RIGHT;
+            else {
+                if (screenX > touchR) move.direc = Movement.Direc.LEFT;
+                if (screenX < touchL) move.direc = Movement.Direc.RIGHT;
+            }
         }
         return false;
     }
