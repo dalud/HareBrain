@@ -11,6 +11,9 @@ import com.badlogic.gdx.InputProcessor;
 public class DesktopInput implements InputProcessor {
     private Movement move;
     private int half, dragSens;
+    public volatile static int touch, ducker;
+    public volatile static float initY;
+    public static volatile boolean ducked;
 
     public DesktopInput(Movement move){
         half = Gdx.graphics.getWidth()/2;
@@ -20,20 +23,41 @@ public class DesktopInput implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        touch++;
+        //System.out.println(touch);
+
+        if(screenY > Gdx.graphics.getHeight()/6*5 && screenX > Gdx.graphics.getWidth()/3 && screenY < Gdx.graphics.getWidth()/3*2) {
+            ducked = true;
+            ducker = pointer;
+            initY = 0;
+            move.direc = Movement.Direc.DUCK;
+            System.out.println("touch duck");
+        }
+
+        if(!ducked) {
+            if (screenX > Gdx.graphics.getWidth()/16*10 && move.direc != Movement.Direc.LEFT) move.direc = Movement.Direc.RIGHT;
+            else if (screenY < Gdx.graphics.getWidth()/16*6 && move.direc != Movement.Direc.RIGHT)
+                move.direc = Movement.Direc.LEFT;
+            else if (touch > 1) {
+                if (move.direc == Movement.Direc.RIGHT || move.direc == Movement.Direc.LEFT)
+                    move.jump();
+            }
+        }
+
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        AndroidInput.touch--;
+        touch--;
 
-        if(AndroidInput.ducker == pointer) {
-            AndroidInput.ducked = false;
+        if(ducker == pointer) {
+            ducked = false;
             move.direc = Movement.Direc.IDLE;
         }
 
-        if(!AndroidInput.ducked) {
-            if (AndroidInput.touch == 0) move.direc = Movement.Direc.IDLE;
+        if(!ducked) {
+            if (touch == 0) move.direc = Movement.Direc.IDLE;
             else if (screenX > half) move.direc = Movement.Direc.LEFT;
             else if (screenX < half) move.direc = Movement.Direc.RIGHT;
         }
@@ -42,20 +66,7 @@ public class DesktopInput implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        if(!AndroidInput.ducked) {
-            if (screenY + dragSens < AndroidInput.initY) {
-                move.jump();
-            }
-            else if(screenY - dragSens > AndroidInput.initY) {
-                if(AndroidInput.initY != 0) { //hirveä purkka, mutta haluan päästä pelaamaan EVEä :D
-                    AndroidInput.ducked = true;
-                    AndroidInput.ducker = pointer;
-                    System.out.println("drag duck, koska initY:" + AndroidInput.initY + " ja screenY:" + screenY);
-                    move.direc = Movement.Direc.DUCK;
-                }
-            }
-            AndroidInput.initY = screenY;
-        }
+
         return false;
     }
 
@@ -73,10 +84,10 @@ public class DesktopInput implements InputProcessor {
     public boolean keyDown(int keycode) {
 
         if(keycode == Input.Keys.DOWN) {
-            AndroidInput.ducked = true;
+            ducked = true;
             move.direc = Movement.Direc.DUCK;
         }
-        if(!AndroidInput.ducked) {
+        if(!ducked) {
             if (keycode == Input.Keys.SPACE) {
                 move.jump();
             }
@@ -93,8 +104,10 @@ public class DesktopInput implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        if(keycode == Input.Keys.DOWN) AndroidInput.ducked = false;
-        if(!AndroidInput.ducked) {
+
+        if(keycode == Input.Keys.DOWN) ducked = false;
+
+        if(!ducked) {
             if (keycode != Input.Keys.SPACE) move.direc = Movement.Direc.IDLE;
         }
 
