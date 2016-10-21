@@ -28,27 +28,25 @@ public class DesktopInput implements InputProcessor {
         touch++;
         System.out.println(touch);
 
-        if(screenY > Gdx.graphics.getHeight()/6*5 && screenX > Gdx.graphics.getWidth()/3 && screenY < Gdx.graphics.getWidth()/3*2) {
+        if(screenY > Gdx.graphics.getHeight()/6*5 && screenX > touchL && screenY < touchR) {
             ducked = true;
             ducker = pointer;
             initY = 0;
             move.direc = Movement.Direc.DUCK;
-            System.out.println("touch duck");
+            //System.out.println("touch duck");
         }
 
-        if(!ducked) {
-            if (screenX > touchR && move.direc != Movement.Direc.LEFT) intent = Movement.Direc.RIGHT;
+        if (screenX > touchR && move.direc != Movement.Direc.LEFT) intent = Movement.Direc.RIGHT;
 
-            if (screenX < touchL && move.direc != Movement.Direc.RIGHT) intent = Movement.Direc.LEFT;
+        if (screenX < touchL && move.direc != Movement.Direc.RIGHT) intent = Movement.Direc.LEFT;
 
-            if (touch > 1) {
-                if (move.direc == Movement.Direc.RIGHT || move.direc == Movement.Direc.LEFT) {
-                    move.jump();
-                    //System.out.println("touch jump");
-                }
+        if (touch > 1) {
+            if (move.direc == Movement.Direc.RIGHT || move.direc == Movement.Direc.LEFT) {
+                move.jump();
+                //System.out.println("touch jump");
             }
-            move.direc = intent;
         }
+        if(!ducked) move.direc = intent;
 
         return false;
     }
