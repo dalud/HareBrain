@@ -10,25 +10,33 @@ import com.badlogic.gdx.InputProcessor;
 
 public class DesktopInput implements InputProcessor {
     private Movement move;
-    private int touchR, touchL, dragSens;
+    private int width, height, touchR, touchL, dragSens;
     public volatile static int touch, ducker;
     public volatile static float initY;
     public static volatile boolean ducked;
     private Movement.Direc intent;
 
     public DesktopInput(Movement move){
-        touchR = Gdx.graphics.getWidth()/16*10;
-        touchL = Gdx.graphics.getWidth()/16*6;
+        width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();
+
+        //SCREENBLOCKS FOR CONTROLS
+        touchR = width/16*10;
+        touchL = width/16*6;
+
+        //SENSITIVITY FOR DRAG EVENTS
         dragSens = Gdx.graphics.getHeight()/20;
+
         this.move = move;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         touch++;
-        System.out.println(touch);
+        //System.out.println(touch);
 
-        if(screenY > Gdx.graphics.getHeight()/6*5 && screenX > touchL && screenY < touchR) {
+        //TOUCH DUCKING
+        if(screenY>height/9*7.5 && screenX>touchL && screenX<touchR) {
             ducked = true;
             ducker = pointer;
             initY = 0;
@@ -36,17 +44,23 @@ public class DesktopInput implements InputProcessor {
             //System.out.println("touch duck");
         }
 
-        if (screenX > touchR && move.direc != Movement.Direc.LEFT) intent = Movement.Direc.RIGHT;
+        //BASIC MOVE LEFT&RIGHT (sets intent to move)
+        if (screenX>touchR && move.direc!=Movement.Direc.LEFT) intent = Movement.Direc.RIGHT;
+        if (screenX<touchL && move.direc!=Movement.Direc.RIGHT) intent = Movement.Direc.LEFT;
 
-        if (screenX < touchL && move.direc != Movement.Direc.RIGHT) intent = Movement.Direc.LEFT;
-
+        //TOUCH JUMP WHILE MOVING
         if (touch > 1) {
             if (move.direc == Movement.Direc.RIGHT || move.direc == Movement.Direc.LEFT) {
                 move.jump();
                 //System.out.println("touch jump");
             }
         }
-        if(!ducked) move.direc = intent;
+
+        //SINGLE TOUCH JUMP
+        if(screenY<height/9*4 && screenX<touchR && screenX>touchL) move.jump();
+
+        //MOVE IF NOT DUCKED
+        if(!ducked /*&& (screenX<touchL || screenX>touchR)*/) move.direc = intent;
 
         return false;
     }

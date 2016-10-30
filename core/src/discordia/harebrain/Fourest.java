@@ -44,10 +44,10 @@ public class Fourest {
 
         //physics
         BodyDef groundDef = new BodyDef();
-        groundDef.position.set(-16, -4);
+        groundDef.position.set(-32, -4);
         body = world.createBody(groundDef);
         PolygonShape box = new PolygonShape();
-        box.setAsBox(32, 1);
+        box.setAsBox(64, 1);
         body.createFixture(box, 0);
         box.dispose();
     }
