@@ -1,5 +1,6 @@
 package discordia.harebrain;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 
@@ -9,8 +10,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public class AndroidInput implements GestureDetector.GestureListener{
     private Movement move;
+    private int height;
 
     public AndroidInput(Movement move) {
+        height = Gdx.graphics.getHeight();
         this.move = move;
     }
 
@@ -21,11 +24,6 @@ public class AndroidInput implements GestureDetector.GestureListener{
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-
-        /*if(!DesktopInput.ducked) {
-            if (y<Gdx.graphics.getHeight()/9*6 && x<Gdx.graphics.getWidth()/16*9 && x>Gdx.graphics.getWidth()/16*7) move.jump();
-        }*/
-
         return false;
     }
 
@@ -36,6 +34,9 @@ public class AndroidInput implements GestureDetector.GestureListener{
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
+        //FLING JUMP
+        if (velocityY < -height) move.jump();
+
         return false;
     }
 
