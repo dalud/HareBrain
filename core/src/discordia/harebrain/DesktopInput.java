@@ -10,9 +10,8 @@ import com.badlogic.gdx.InputProcessor;
 
 public class DesktopInput implements InputProcessor {
     private Movement move;
-    private int width, height, touchR, touchL, dragSens;
+    private int width, height, touchR, touchL, dragSens, initY;
     public volatile static int touch, ducker;
-    public volatile static float initY;
     public static volatile boolean ducked;
     private Movement.Direc intent;
 
@@ -25,7 +24,7 @@ public class DesktopInput implements InputProcessor {
         touchL = width/16*6;
 
         //SENSITIVITY FOR DRAG EVENTS
-        dragSens = Gdx.graphics.getHeight()/20;
+        dragSens = Gdx.graphics.getHeight()/5;
 
         this.move = move;
     }
@@ -33,15 +32,13 @@ public class DesktopInput implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         touch++;
-        //System.out.println(touch);
+        initY = screenY;
 
         //TOUCH DUCKING
         if(screenY>height/9*7.5 && screenX>touchL && screenX<touchR) {
             ducked = true;
             ducker = pointer;
-            initY = 0;
             move.direc = Movement.Direc.DUCK;
-            //System.out.println("touch duck");
         }
 
         //BASIC MOVE LEFT&RIGHT (sets intent to move)
@@ -52,23 +49,22 @@ public class DesktopInput implements InputProcessor {
         if (touch > 1) {
             if (move.direc == Movement.Direc.RIGHT || move.direc == Movement.Direc.LEFT) {
                 move.jump();
-                //System.out.println("touch jump");
             }
         }
 
         //SINGLE TOUCH JUMP
-        if(screenY<height/9*4 && screenX<touchR && screenX>touchL) move.jump();
+        if(!ducked && screenY<height/9*4 && screenX<touchR && screenX>touchL) move.jump();
 
         //MOVE IF NOT DUCKED
-        if(!ducked /*&& (screenX<touchL || screenX>touchR)*/) move.direc = intent;
+        if(!ducked) move.direc = intent;
 
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+
         touch--;
-        System.out.println(touch);
 
         if(ducked && ducker == pointer) {
             ducked = false;
@@ -87,6 +83,13 @@ public class DesktopInput implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+
+        //DRAG DUCK
+        if(screenY-initY > dragSens) {
+            ducked = true;
+            move.direc = Movement.Direc.DUCK;
+            ducker = pointer;
+        }
 
         return false;
     }
